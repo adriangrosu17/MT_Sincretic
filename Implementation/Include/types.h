@@ -9,6 +9,11 @@
 #ifndef TYPES_H_
 #define TYPES_H_
 
+/** Define System clock frequency
+*/
+
+#define S_CLOCK 8000000UL
+
 /**TRUE and FALSE boolean values for bool type
 */
 typedef enum bool{

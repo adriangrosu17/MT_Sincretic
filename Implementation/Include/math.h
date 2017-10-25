@@ -5,10 +5,10 @@
  *  Author: Adrian
  */ 
 
-#include "types.h"
-
 #ifndef MATH_H_
 #define MATH_H_
+
+#include "types.h"
 
 void setBit(volatile u8 *registerName, u8 position);
 
