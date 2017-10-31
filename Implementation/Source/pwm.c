@@ -9,6 +9,7 @@
 
 #include "math.h"
 #include "pwm.h"
+#include "gpio.h"
 
 u8 timer1ClockSource;
 
@@ -20,18 +21,23 @@ u16 calculateTop(u16 *prescaler, u32 frequency, timer timerSelection){
 			break;
 		case TIMER1:
 			divisor = 1;
+			*prescaler = divisor;
 			topValue = S_CLOCK / divisor / frequency - 1;
 			if(topValue > 0xFFFF){
 				divisor = 8;
+				*prescaler = divisor;
 				topValue = S_CLOCK / divisor / frequency - 1;
 				if(topValue > 0xFFFF){
 					divisor = 64;
+					*prescaler = divisor;
 					topValue = S_CLOCK / divisor / frequency -1;
 					if(topValue > 0xFFFF){
 						divisor = 256;
+						*prescaler = divisor;
 						topValue = S_CLOCK / divisor / frequency - 1;
 						if(topValue > 0xFFFF){
 							divisor = 1024;
+							*prescaler = divisor;
 							topValue = S_CLOCK / divisor / frequency - 1;
 						}
 					}
@@ -43,12 +49,12 @@ u16 calculateTop(u16 *prescaler, u32 frequency, timer timerSelection){
 		case TIMER3:
 			break;
 	}
-	*prescaler = divisor;
-	return topValue;
+	return (u16)topValue;
 }
 
 void pwm_init(u8 dutyCycle, u32 frequency, timer timerSelection, channel channelSelection){
 	u16 prescaler = 0;
+	u32 dutyAux = 0;
 	switch(timerSelection){
 		case TIMER0:
 			break;
@@ -74,20 +80,25 @@ void pwm_init(u8 dutyCycle, u32 frequency, timer timerSelection, channel channel
 					break;
 			}
 			/* FAST PWM mode with ICR1 as TOP */
+			clearBit(&TCCR1A, WGM10);
 			setBit(&TCCR1A, WGM11);
 			setBit(&TCCR1B, WGM13);
 			setBit(&TCCR1B, WGM12);
 			/* Clear OC1A/B on compare match and set it on BOTTOM */
 			switch(channelSelection){
 				case CHANNEL_A:
+					gpio_init(PD, 5, OUTPUT, NO_PULL);
 					setBit(&TCCR1A, COM1A1);
 					clearBit(&TCCR1A, COM1A0);
-					OCR1A = (dutyCycle * ICR1) / 100;
+					dutyAux = (u32) dutyCycle * ICR1 / 100;
+					OCR1A = (u16) dutyAux;
 					break;
 				case CHANNEL_B:
+					gpio_init(PD, 4, OUTPUT, NO_PULL);
 					setBit(&TCCR1A, COM1B1);
 					clearBit(&TCCR1A, COM1B0);
-					OCR1B = (dutyCycle * ICR1) / 100;
+					dutyAux = (u32) dutyCycle * ICR1 / 100;
+					OCR1B = (u16) dutyAux;
 					break;
 				case NO_CHANNEL:
 					break;
@@ -103,16 +114,19 @@ void pwm_init(u8 dutyCycle, u32 frequency, timer timerSelection, channel channel
 /** Sets a new duty cycle for the selected timer and channel 
 */
 void pwm_setDutyCycle(u8 dutyCycle, timer timerSelection, channel channelSelection){
+	u32 dutyAux = 0;
 	switch(timerSelection){
 		case TIMER0:
 			break;
 		case TIMER1:
 			switch(channelSelection){
 				case CHANNEL_A:
-					OCR1A = (dutyCycle * ICR1) / 100;
+					dutyAux = (u32) dutyCycle * ICR1 / 100;
+					OCR1A = (u16) dutyAux;
 					break;
 				case CHANNEL_B:
-					OCR1B= (dutyCycle * ICR1) / 100;
+					dutyAux = (u32) dutyCycle * ICR1 / 100;
+					OCR1B = (u16) dutyAux;
 					break;
 				case NO_CHANNEL:
 					break;

@@ -44,8 +44,10 @@ SUBDIRS :=  \
 C_SRCS +=  \
 ../Example/Source/main.c \
 ../Source/adc.c \
+../Source/gpio.c \
 ../Source/math.c \
-../Source/pwm.c
+../Source/pwm.c \
+../Source/uart.c
 
 
 PREPROCESSING_SRCS += 
@@ -57,26 +59,34 @@ ASM_SRCS +=
 OBJS +=  \
 Example/Source/main.o \
 Source/adc.o \
+Source/gpio.o \
 Source/math.o \
-Source/pwm.o
+Source/pwm.o \
+Source/uart.o
 
 OBJS_AS_ARGS +=  \
 Example/Source/main.o \
 Source/adc.o \
+Source/gpio.o \
 Source/math.o \
-Source/pwm.o
+Source/pwm.o \
+Source/uart.o
 
 C_DEPS +=  \
 Example/Source/main.d \
 Source/adc.d \
+Source/gpio.d \
 Source/math.d \
-Source/pwm.d
+Source/pwm.d \
+Source/uart.d
 
 C_DEPS_AS_ARGS +=  \
 Example/Source/main.d \
 Source/adc.d \
+Source/gpio.d \
 Source/math.d \
-Source/pwm.d
+Source/pwm.d \
+Source/uart.d
 
 OUTPUT_FILE_PATH +=Implementation.elf
 
@@ -92,6 +102,10 @@ LINKER_SCRIPT_DEP+=
 
 
 # AVR32/GNU C Compiler
+
+
+
+
 
 
 
