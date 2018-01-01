@@ -75,6 +75,8 @@ Discarded input sections
  .bss           0x00000000        0x0 Source/uart.o
  .text.uart_stop
                 0x00000000       0x16 Source/uart.o
+ .text.uart_transmit
+                0x00000000       0x10 Source/uart.o
  .text          0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr51\libgcc.a(_udivmodsi4.o)
  .data          0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr51\libgcc.a(_udivmodsi4.o)
  .bss           0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr51\libgcc.a(_udivmodsi4.o)
@@ -265,7 +267,7 @@ END GROUP
 .rela.plt
  *(.rela.plt)
 
-.text           0x00000000      0x688
+.text           0x00000000      0x738
  *(.vectors)
  .vectors       0x00000000       0x8c C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.2.132/gcc/dev/atmega1284/avr51/crtatmega1284.o
                 0x00000000                __vector_default
@@ -359,63 +361,60 @@ END GROUP
                 0x000000ac                __vector_20
                 0x000000ae                . = ALIGN (0x2)
  *(.text.*)
- .text.main     0x000000ae       0xd4 Example/Source/main.o
+ .text.main     0x000000ae      0x194 Example/Source/main.o
                 0x000000ae                main
  .text.disableJTAG
-                0x00000182        0x8 Source/gpio.o
-                0x00000182                disableJTAG
+                0x00000242        0x8 Source/gpio.o
+                0x00000242                disableJTAG
  .text.gpio_init
-                0x0000018a       0x7a Source/gpio.o
-                0x0000018a                gpio_init
+                0x0000024a       0x7a Source/gpio.o
+                0x0000024a                gpio_init
  .text.gpio_out_set
-                0x00000204       0x30 Source/gpio.o
-                0x00000204                gpio_out_set
+                0x000002c4       0x30 Source/gpio.o
+                0x000002c4                gpio_out_set
  .text.gpio_out_reset
-                0x00000234       0x30 Source/gpio.o
-                0x00000234                gpio_out_reset
- .text.setBit   0x00000264       0x18 Source/math.o
-                0x00000264                setBit
+                0x000002f4       0x30 Source/gpio.o
+                0x000002f4                gpio_out_reset
+ .text.setBit   0x00000324       0x18 Source/math.o
+                0x00000324                setBit
  .text.clearBit
-                0x0000027c       0x1a Source/math.o
-                0x0000027c                clearBit
+                0x0000033c       0x1a Source/math.o
+                0x0000033c                clearBit
  .text.updateBit
-                0x00000296       0x30 Source/math.o
-                0x00000296                updateBit
+                0x00000356       0x30 Source/math.o
+                0x00000356                updateBit
  .text.calculateTop
-                0x000002c6       0xfe Source/pwm.o
-                0x000002c6                calculateTop
+                0x00000386       0xfe Source/pwm.o
+                0x00000386                calculateTop
  .text.pwm_init
-                0x000003c4      0x126 Source/pwm.o
-                0x000003c4                pwm_init
+                0x00000484      0x126 Source/pwm.o
+                0x00000484                pwm_init
  .text.pwm_setDutyCycle
-                0x000004ea       0x52 Source/pwm.o
-                0x000004ea                pwm_setDutyCycle
+                0x000005aa       0x52 Source/pwm.o
+                0x000005aa                pwm_setDutyCycle
  .text.pwm_start
-                0x0000053c       0x36 Source/pwm.o
-                0x0000053c                pwm_start
+                0x000005fc       0x36 Source/pwm.o
+                0x000005fc                pwm_start
  .text.uart_init
-                0x00000572       0x74 Source/uart.o
-                0x00000572                uart_init
+                0x00000632       0x74 Source/uart.o
+                0x00000632                uart_init
  .text.uart_start
-                0x000005e6       0x1c Source/uart.o
-                0x000005e6                uart_start
- .text.uart_transmit
-                0x00000602       0x10 Source/uart.o
-                0x00000602                uart_transmit
+                0x000006a6       0x1c Source/uart.o
+                0x000006a6                uart_start
  .text.uart_receive
-                0x00000612       0x10 Source/uart.o
-                0x00000612                uart_receive
+                0x000006c2       0x10 Source/uart.o
+                0x000006c2                uart_receive
  .text.libgcc.div
-                0x00000622       0x44 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr51\libgcc.a(_udivmodsi4.o)
-                0x00000622                __udivmodsi4
+                0x000006d2       0x44 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr51\libgcc.a(_udivmodsi4.o)
+                0x000006d2                __udivmodsi4
  .text.libgcc.mul
-                0x00000666       0x1e c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr51\libgcc.a(_umulhisi3.o)
-                0x00000666                __umulhisi3
-                0x00000684                . = ALIGN (0x2)
+                0x00000716       0x1e c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr51\libgcc.a(_umulhisi3.o)
+                0x00000716                __umulhisi3
+                0x00000734                . = ALIGN (0x2)
  *(.fini9)
- .fini9         0x00000684        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr51\libgcc.a(_exit.o)
-                0x00000684                _exit
-                0x00000684                exit
+ .fini9         0x00000734        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr51\libgcc.a(_exit.o)
+                0x00000734                _exit
+                0x00000734                exit
  *(.fini9)
  *(.fini8)
  *(.fini8)
@@ -434,11 +433,11 @@ END GROUP
  *(.fini1)
  *(.fini1)
  *(.fini0)
- .fini0         0x00000684        0x4 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr51\libgcc.a(_exit.o)
+ .fini0         0x00000734        0x4 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr51\libgcc.a(_exit.o)
  *(.fini0)
-                0x00000688                _etext = .
+                0x00000738                _etext = .
 
-.data           0x00800100        0x0 load address 0x00000688
+.data           0x00800100        0x0 load address 0x00000738
                 [!provide]                PROVIDE (__data_start, .)
  *(.data)
  *(.data*)
@@ -457,8 +456,8 @@ END GROUP
  COMMON         0x00800100        0x1 Source/pwm.o
                 0x00800100                timer1ClockSource
                 0x00800101                PROVIDE (__bss_end, .)
-                0x00000688                __data_load_start = LOADADDR (.data)
-                0x00000688                __data_load_end = (__data_load_start + SIZEOF (.data))
+                0x00000738                __data_load_start = LOADADDR (.data)
+                0x00000738                __data_load_end = (__data_load_start + SIZEOF (.data))
 
 .noinit         0x00800101        0x0
                 [!provide]                PROVIDE (__noinit_start, .)
@@ -549,32 +548,32 @@ END GROUP
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x00000000     0x1edb
+.debug_info     0x00000000     0x215d
  *(.debug_info .gnu.linkonce.wi.*)
  .debug_info    0x00000000      0x792 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.2.132/gcc/dev/atmega1284/avr51/crtatmega1284.o
- .debug_info    0x00000792      0x5c1 Example/Source/main.o
- .debug_info    0x00000d53      0x62c Source/gpio.o
- .debug_info    0x0000137f      0x1ce Source/math.o
- .debug_info    0x0000154d      0x546 Source/pwm.o
- .debug_info    0x00001a93      0x448 Source/uart.o
+ .debug_info    0x00000792      0x843 Example/Source/main.o
+ .debug_info    0x00000fd5      0x62c Source/gpio.o
+ .debug_info    0x00001601      0x1ce Source/math.o
+ .debug_info    0x000017cf      0x546 Source/pwm.o
+ .debug_info    0x00001d15      0x448 Source/uart.o
 
-.debug_abbrev   0x00000000      0xcd2
+.debug_abbrev   0x00000000      0xc41
  *(.debug_abbrev)
  .debug_abbrev  0x00000000      0x729 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.2.132/gcc/dev/atmega1284/avr51/crtatmega1284.o
- .debug_abbrev  0x00000729      0x15c Example/Source/main.o
- .debug_abbrev  0x00000885      0x11f Source/gpio.o
- .debug_abbrev  0x000009a4       0xcf Source/math.o
- .debug_abbrev  0x00000a73      0x145 Source/pwm.o
- .debug_abbrev  0x00000bb8      0x11a Source/uart.o
+ .debug_abbrev  0x00000729       0xcb Example/Source/main.o
+ .debug_abbrev  0x000007f4      0x11f Source/gpio.o
+ .debug_abbrev  0x00000913       0xcf Source/math.o
+ .debug_abbrev  0x000009e2      0x145 Source/pwm.o
+ .debug_abbrev  0x00000b27      0x11a Source/uart.o
 
-.debug_line     0x00000000      0xb2c
+.debug_line     0x00000000      0xadd
  *(.debug_line .debug_line.* .debug_line_end)
  .debug_line    0x00000000      0x169 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.2.132/gcc/dev/atmega1284/avr51/crtatmega1284.o
- .debug_line    0x00000169      0x224 Example/Source/main.o
- .debug_line    0x0000038d      0x2b8 Source/gpio.o
- .debug_line    0x00000645       0xbe Source/math.o
- .debug_line    0x00000703      0x289 Source/pwm.o
- .debug_line    0x0000098c      0x1a0 Source/uart.o
+ .debug_line    0x00000169      0x1d5 Example/Source/main.o
+ .debug_line    0x0000033e      0x2b8 Source/gpio.o
+ .debug_line    0x000005f6       0xbe Source/math.o
+ .debug_line    0x000006b4      0x289 Source/pwm.o
+ .debug_line    0x0000093d      0x1a0 Source/uart.o
 
 .debug_frame    0x00000000      0x24c
  *(.debug_frame)
@@ -584,27 +583,27 @@ END GROUP
  .debug_frame   0x0000012c       0xa0 Source/pwm.o
  .debug_frame   0x000001cc       0x80 Source/uart.o
 
-.debug_str      0x00000000      0x78e
+.debug_str      0x00000000      0x739
  *(.debug_str)
  .debug_str     0x00000000      0x296 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.2.132/gcc/dev/atmega1284/avr51/crtatmega1284.o
- .debug_str     0x00000296      0x31a Example/Source/main.o
-                                0x36e (size before relaxing)
- .debug_str     0x000005b0       0xb8 Source/gpio.o
+ .debug_str     0x00000296      0x2b7 Example/Source/main.o
+                                0x30b (size before relaxing)
+ .debug_str     0x0000054d       0xb8 Source/gpio.o
                                 0x297 (size before relaxing)
- .debug_str     0x00000668       0x36 Source/math.o
+ .debug_str     0x00000605       0x36 Source/math.o
                                 0x1bb (size before relaxing)
- .debug_str     0x0000069e       0x98 Source/pwm.o
+ .debug_str     0x0000063b       0x98 Source/pwm.o
                                 0x2de (size before relaxing)
- .debug_str     0x00000736       0x58 Source/uart.o
+ .debug_str     0x000006d3       0x66 Source/uart.o
                                 0x2ad (size before relaxing)
 
-.debug_loc      0x00000000      0xe35
+.debug_loc      0x00000000      0xe14
  *(.debug_loc)
- .debug_loc     0x00000000       0x4a Example/Source/main.o
- .debug_loc     0x0000004a      0x6e4 Source/gpio.o
- .debug_loc     0x0000072e       0x7e Source/math.o
- .debug_loc     0x000007ac      0x4b8 Source/pwm.o
- .debug_loc     0x00000c64      0x1d1 Source/uart.o
+ .debug_loc     0x00000000       0x29 Example/Source/main.o
+ .debug_loc     0x00000029      0x6e4 Source/gpio.o
+ .debug_loc     0x0000070d       0x7e Source/math.o
+ .debug_loc     0x0000078b      0x4b8 Source/pwm.o
+ .debug_loc     0x00000c43      0x1d1 Source/uart.o
 
 .debug_macinfo
  *(.debug_macinfo)
