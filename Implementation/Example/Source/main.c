@@ -9,182 +9,34 @@
 
 #include <avr/io.h>
 #include <util/delay.h>
+#include <avr/interrupt.h>
 
 #include "pwm.h"
 #include "adc.h"
 #include "gpio.h"
 #include "uart.h"
+#include "motor.h"
+#include "encoder.h"
 #include <string.h>
+
+void init(){
+	pwm_init(4, 50, TIMER1, CHANNEL_A);
+	motor_init();
+	encoder_init();
+	uart_init(ASYNCHRONOUS, EVEN, _2BIT, _9600);
+	motor_start();
+	pwm_start(TIMER1);
+	encoder_start();	
+	uart_start(TRUE, TRUE);
+}
 
 int main(void)
 {
 	disableJTAG();
-	//gpio_init(PA, 4, OUTPUT, NO_PULL);
-	//gpio_init(PA, 5, OUTPUT, NO_PULL);
-	//gpio_init(PB, 0, INPUT, NO_PULL);
-	pwm_init(4, 50, TIMER1, CHANNEL_B);
-	//pwm_init(100, 25000, TIMER1, CHANNEL_B);
-	pwm_start(TIMER1);
-	//u8 channels[8] = {1, 0, 0, 0, 0, 0, 0, 0};
-	//adc_init(_8BIT, ADC_PRESCALER_2, SINGLE_CONVERSION);
-	//adc_start(channels);
-	//gpio_out_set(PA, 4);
-	//gpio_out_reset(PA, 5);
-	uart_init(ASYNCHRONOUS, EVEN, _2BIT, _9600);
-	uart_start(TRUE, TRUE);
-	gpio_init(PA, 2, OUTPUT, NO_PULL);
-	gpio_init(PD, 7, OUTPUT, NO_PULL);
-	gpio_init(PC, 7, OUTPUT, NO_PULL);
-	gpio_init(PC, 6, OUTPUT, NO_PULL);
-	gpio_init(PC, 5, OUTPUT, NO_PULL);
-	gpio_init(PC, 3, OUTPUT, NO_PULL);
-	gpio_init(PD, 6, OUTPUT, NO_PULL);
-	gpio_init(PD, 5, OUTPUT, NO_PULL);
-	gpio_init(PB, 0, OUTPUT, NO_PULL);
-	gpio_init(PB, 1, OUTPUT, NO_PULL);
-	gpio_init(PB, 2, OUTPUT, NO_PULL);
-	gpio_out_set(PA, 2);
-	gpio_out_reset(PD, 6);
-	gpio_out_reset(PD, 7);
-	gpio_out_reset(PC, 7);
-	gpio_out_reset(PC, 6);
-	gpio_out_reset(PC, 5);
-	gpio_out_reset(PC, 3);
-	gpio_out_set(PD, 5);
-	gpio_out_set(PB, 0);
-	gpio_out_reset(PB, 1);
-	gpio_out_reset(PB, 2);
-	
-	//gpio_init(PC, 0, INPUT, NO_PULL);
-	u8 aux = 0;
+	init();
+	sei();
     while (1) 
     {
-		aux = uart_receive();
-		if(aux == '1')
-		{
-			gpio_out_reset(PB, 0);
-			gpio_out_set(PB, 1);
-			gpio_out_reset(PB, 2);
-			gpio_out_reset(PD, 5);
-			pwm_setDutyCycle(3, TIMER1, CHANNEL_B);
-			gpio_out_set(PD, 7);
-			gpio_out_set(PC, 7);
-			gpio_out_reset(PC, 5);
-			gpio_out_set(PC, 3);
-			gpio_out_reset(PC, 6);
-		}
-		if(aux == '2')
-		{
-			gpio_out_reset(PB, 0);
-			gpio_out_reset(PB, 1);
-			gpio_out_set(PB, 2);
-			gpio_out_set(PD, 5);
-			pwm_setDutyCycle(7, TIMER1, CHANNEL_B);
-			gpio_out_set(PD, 6);
-			gpio_out_set(PC, 5);
-			gpio_out_reset(PC, 3);
-			gpio_out_reset(PC, 7);
-			gpio_out_set(PC, 6);
-		}
-		if(aux == '3')
-		{
-			gpio_out_set(PB, 0);
-			gpio_out_reset(PB, 1);
-			gpio_out_reset(PB, 2);
-			gpio_out_reset(PD, 5);
-			pwm_setDutyCycle(12, TIMER1, CHANNEL_B);
-			gpio_out_reset(PD, 6);
-			gpio_out_reset(PD, 7);
-		}
-		//_delay_ms(500);
-		//gpio_out_set(PD, 7);
-		//_delay_ms(500);
-		//gpio_out_reset(PD, 7);
-		/*pwm_setDutyCycle(4, TIMER1, CHANNEL_A);
-		_delay_ms(400);
-		pwm_setDutyCycle(12, TIMER1, CHANNEL_A);
-		_delay_ms(400);
-		pwm_setDutyCycle(8, TIMER1, CHANNEL_A);
-		_delay_ms(400);*/
-		/*aux = uart_receive();
-		if(aux == '1'){
-			gpio_out_set(PD, 7);
-		}
-		if(aux == '2'){
-			gpio_out_reset(PD, 7);
-		}
-		if(aux == '3'){
-			gpio_out_set(PD, 6);
-		}
-		if(aux == '4'){
-			gpio_out_reset(PD, 6);
-		}
-		if(aux == '5'){
-			gpio_out_set(PC, 7);
-			gpio_out_reset(PC, 6);
-		}
-		if(aux == '6'){
-			gpio_out_reset(PC, 7);
-			gpio_out_set(PC, 6);
-		}
-		if(aux == '7'){
-			gpio_out_set(PC, 5);
-			gpio_out_reset(PC, 3);
-		}
-		if(aux == '8'){
-			gpio_out_reset(PC, 5);
-			gpio_out_set(PC, 3);
-		}*/
-		/*if(aux == 's'){
-			pwm_setDutyCycle(4, TIMER1, CHANNEL_A);
-			uart_transmit('s');
-			uart_transmit('\n');
-			uart_transmit('\r');
-		}
-		if(aux == 'm'){
-			pwm_setDutyCycle(8, TIMER1, CHANNEL_A);
-			uart_transmit('m');
-			uart_transmit('\n');
-			uart_transmit('\r');
-		}
-		if(aux == 'd'){
-			pwm_setDutyCycle(12, TIMER1, CHANNEL_A);
-			uart_transmit('d');
-			uart_transmit('\n');
-			uart_transmit('\r');
-		}
-		if(aux == 'l'){
-			gpio_out_set(PD, 7);
-			uart_transmit('l');
-			uart_transmit('\n');
-			uart_transmit('\r');
-		}
-		if(aux == 'k'){
-			gpio_out_reset(PD, 7);
-			uart_transmit('k');	
-			uart_transmit('\n');
-			uart_transmit('\r');
-		}
-		_delay_ms(100);*/
-		/*for(u8 i = 30; i<=100; i++){
-			pwm_setDutyCycle(i, TIMER1, CHANNEL_A);
-			_delay_ms(1000);
-		}*/
-		/*_delay_ms(2000);
-		pwm_setDutyCycle(12, TIMER1, CHANNEL_A);
-		pwm_setDutyCycle(5, TIMER1, CHANNEL_B);
-		aux = adc_singleRead(0);
-		if(aux > 100)
-			gpio_out_set(PA, 4);
-		else
-			gpio_out_reset(PA, 4);
-		_delay_ms(2000);
-		pwm_setDutyCycle(5, TIMER1, CHANNEL_A);
-		pwm_setDutyCycle(12, TIMER1, CHANNEL_B);
-		aux = adc_singleRead(1);
-		if(aux > 150)
-			gpio_out_set(PA, 5);
-		else
-			gpio_out_reset(PA, 5);*/
+		
     }
 }

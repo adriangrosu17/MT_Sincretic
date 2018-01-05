@@ -5,9 +5,43 @@
  *  Author: Adrian
  */ 
 #include <avr/io.h>
+#include <avr/interrupt.h>
 
 #include "math.h"
 #include "uart.h"
+#include "gpio.h"
+#include "pwm.h"
+#include "motor.h"
+#include "encoder.h"
+
+volatile u8 aux = 0;
+volatile u8 aux2 = 0;
+
+ISR(USART0_RX_vect){
+	aux = UDR0;
+	if(aux == '1')
+	{
+		motor_speed(30);
+	}
+	if(aux == '2')
+	{
+		motor_speed(60);
+	}
+	if(aux == '3')
+	{
+		motor_speed(90);
+	}
+	if(aux == '4'){
+		motor_stop();
+	}
+	if(aux == '5'){
+		motor_start();
+	}
+	aux2 = (u8)encoder_getLeftCounter();
+	uart_transmit(aux2);
+	aux2 = (u8)encoder_getRightCounter();
+	uart_transmit(aux2);
+}
 
 void uart_init(syncMode uartMode, parity uartParity, stopBits uartStop, baudRate uartBaudRate){
 	/** Double speed disabled */
@@ -26,11 +60,14 @@ void uart_init(syncMode uartMode, parity uartParity, stopBits uartStop, baudRate
 	updateBit(&UCSR0C, USBS0, uartStop);
 	/** Baud rate */
 	UBRR0 = uartBaudRate;
+	/** Interrupt mode on Receive enabled*/
+	setBit(&UCSR0B, RXCIE0);
 }
 
 void uart_start(bool uartTx, bool uartRx){
 	updateBit(&UCSR0B, RXEN0, uartRx);
 	updateBit(&UCSR0B, TXEN0, uartTx);
+	
 }
 
 void uart_stop(bool uartTx, bool uartRx){

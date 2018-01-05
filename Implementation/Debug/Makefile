@@ -44,8 +44,10 @@ SUBDIRS :=  \
 C_SRCS +=  \
 ../Example/Source/main.c \
 ../Source/adc.c \
+../Source/encoder.c \
 ../Source/gpio.c \
 ../Source/math.c \
+../Source/motor.c \
 ../Source/pwm.c \
 ../Source/uart.c
 
@@ -59,32 +61,40 @@ ASM_SRCS +=
 OBJS +=  \
 Example/Source/main.o \
 Source/adc.o \
+Source/encoder.o \
 Source/gpio.o \
 Source/math.o \
+Source/motor.o \
 Source/pwm.o \
 Source/uart.o
 
 OBJS_AS_ARGS +=  \
 Example/Source/main.o \
 Source/adc.o \
+Source/encoder.o \
 Source/gpio.o \
 Source/math.o \
+Source/motor.o \
 Source/pwm.o \
 Source/uart.o
 
 C_DEPS +=  \
 Example/Source/main.d \
 Source/adc.d \
+Source/encoder.d \
 Source/gpio.d \
 Source/math.d \
+Source/motor.d \
 Source/pwm.d \
 Source/uart.d
 
 C_DEPS_AS_ARGS +=  \
 Example/Source/main.d \
 Source/adc.d \
+Source/encoder.d \
 Source/gpio.d \
 Source/math.d \
+Source/motor.d \
 Source/pwm.d \
 Source/uart.d
 
@@ -102,6 +112,10 @@ LINKER_SCRIPT_DEP+=
 
 
 # AVR32/GNU C Compiler
+
+
+
+
 
 
 

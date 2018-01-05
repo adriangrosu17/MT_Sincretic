@@ -128,10 +128,16 @@
     <Compile Include="Include\adc.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="Include\encoder.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="Include\gpio.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Include\math.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Include\motor.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Include\pwm.h">
@@ -146,10 +152,16 @@
     <Compile Include="Source\adc.c">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="Source\encoder.c">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="Source\gpio.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Source\math.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Source\motor.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Source\pwm.c">
