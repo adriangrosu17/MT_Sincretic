@@ -21,6 +21,6 @@ u32 encoder_getLeftCounter();
 
 u32 encoder_getRightCounter();
 
-void encoder_resetCounter();
+void encoder_reset();
 
 #endif /* ENCODER_H_ */

@@ -14,33 +14,157 @@
 #include "motor.h"
 #include "encoder.h"
 
-volatile u8 aux = 0;
-volatile u8 aux2 = 0;
+volatile u8 aux;
+extern u8 systemEnable;
+extern u8 systemMode;
+extern u8 servoEnable;
+extern u8 dcEnable;
+extern u8 dcSpeedLeft;
+extern u8 dcSpeedRight;
 
 ISR(USART0_RX_vect){
 	aux = UDR0;
-	if(aux == '1')
-	{
-		motor_speed(30);
+	switch(aux){
+		case 0x00:
+			systemEnable = 0;
+			servoEnable = 0;
+			dcEnable = 0;
+			dcSpeedLeft = 0;
+			dcSpeedRight = 0;
+			motor_stop();
+			encoder_reset();
+			encoder_stop();
+			gpio_out_reset(PA, 2);
+			pwm_stop(TIMER1);
+			gpio_out_set(PB, 0);
+			gpio_out_reset(PB, 1);
+			gpio_out_reset(PB, 2);
+			break;
+		case 0x01:
+			systemEnable = 1;
+			dcEnable = 1;
+			motor_init();
+			encoder_init();
+			pwm_start(TIMER1);
+			gpio_out_set(PA, 2);
+			gpio_out_reset(PB, 0);
+			if(systemMode == 0){
+				gpio_out_set(PB, 1);
+				gpio_out_reset(PB, 2);
+			}
+			else{
+				gpio_out_reset(PB, 1);
+				gpio_out_set(PB, 2);
+			}
+			break;
+		case 0x0A:
+			systemMode = 0;
+			break;
+		case 0x0B:
+			systemMode = 1;
+			break;
+		case 0x10:
+			servoEnable = 0;
+			pwm_stop(TIMER1);
+			break;
+		case 0x11:
+			servoEnable = 1;
+			pwm_start(TIMER1);
+			break;
+		case 0x1A:
+			if(servoEnable){
+				pwm_setDutyCycle(3, TIMER1, CHANNEL_B);
+			}
+			break;
+		case 0x1B:
+			if(servoEnable){
+				pwm_setDutyCycle(7, TIMER1, CHANNEL_B);
+			}
+			break;
+		case 0x1C:
+			if(servoEnable){
+				pwm_setDutyCycle(12, TIMER1, CHANNEL_B);
+			}
+			break;
+		case 0x20:
+			dcEnable = 0;
+			motor_stop();
+			break;
+		case 0x21:
+			dcEnable = 1;
+			motor_start();
+			dcSpeedLeft = 40;
+			dcSpeedRight = 40;
+			break;
+		case 0x22:
+			if(dcEnable){
+				dcSpeedLeft = (dcSpeedLeft + dcSpeedRight) / 2 - 10;
+				dcSpeedRight = (dcSpeedLeft + dcSpeedRight) / 2 + 10;
+				if(dcSpeedLeft <= 40){
+					dcSpeedLeft = 40;
+					dcSpeedRight = 50;
+				}
+				if(dcSpeedRight >= 100){
+					dcSpeedRight = 100;
+					dcSpeedLeft = 90;
+				}
+				motor_individualDirSpeed(NO_DIR, dcSpeedLeft, NO_DIR, dcSpeedRight);
+			}
+			break;
+		case 0x23:
+			if(dcEnable){
+				dcSpeedLeft = (dcSpeedLeft + dcSpeedRight) / 2 + 10;
+				dcSpeedRight = (dcSpeedLeft + dcSpeedRight) / 2 - 10;
+				if(dcSpeedRight <= 40){
+					dcSpeedRight = 40;
+					dcSpeedLeft = 50;
+				}
+				if(dcSpeedLeft >= 100){
+					dcSpeedLeft = 100;
+					dcSpeedRight = 90;
+				}
+				motor_individualDirSpeed(NO_DIR, dcSpeedLeft, NO_DIR, dcSpeedRight);
+			}
+			break;
+		case 0x2A:
+			if(dcEnable){
+				if((dcSpeedLeft < 100) && (dcSpeedRight < 100)){
+					dcSpeedLeft += 10;
+					dcSpeedRight += 10;
+					motor_speed(dcSpeedLeft);
+				}
+			}
+			break;
+		case 0x2B:
+			if(dcEnable){
+				if((dcSpeedLeft > 40) && (dcSpeedRight > 40)){
+					dcSpeedLeft -= 10;
+					dcSpeedRight -= 10;
+					motor_speed(dcSpeedLeft);
+				}
+			}
+			break;
+		case 0x2C:
+			if(dcEnable){
+				motor_direction(FORWARD);
+			}
+			break;
+		case 0x2D:
+			if(dcEnable){
+				motor_direction(BACKWARD);
+			}
+			break;
+		case 0x2E:
+			if(dcEnable){
+				motor_direction(LEFT);
+			}
+			break;
+		case 0x2F:
+			if(dcEnable){
+				motor_direction(RIGHT);
+			}
+			break;
 	}
-	if(aux == '2')
-	{
-		motor_speed(60);
-	}
-	if(aux == '3')
-	{
-		motor_speed(90);
-	}
-	if(aux == '4'){
-		motor_stop();
-	}
-	if(aux == '5'){
-		motor_start();
-	}
-	aux2 = (u8)encoder_getLeftCounter();
-	uart_transmit(aux2);
-	aux2 = (u8)encoder_getRightCounter();
-	uart_transmit(aux2);
 }
 
 void uart_init(syncMode uartMode, parity uartParity, stopBits uartStop, baudRate uartBaudRate){

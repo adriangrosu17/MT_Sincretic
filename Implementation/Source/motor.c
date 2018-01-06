@@ -24,12 +24,12 @@ void motor_init(){
 }
 
 void motor_start(){
-	gpio_out_reset(PC, 7);
-	gpio_out_set(PC, 6);
+	gpio_out_set(PC, 7);
+	gpio_out_reset(PC, 6);
 	gpio_out_reset(PC, 5);
 	gpio_out_set(PC, 3);
-	pwm_setDutyCycle(20, TIMER2, CHANNEL_A);
-	pwm_setDutyCycle(20, TIMER2, CHANNEL_B);
+	pwm_setDutyCycle(40, TIMER2, CHANNEL_A);
+	pwm_setDutyCycle(40, TIMER2, CHANNEL_B);
 	pwm_start(TIMER2);
 }
 
@@ -40,28 +40,30 @@ void motor_stop(){
 void motor_direction(motorDirection direction){
 	switch(direction){
 		case FORWARD:
-			gpio_out_reset(PC, 7);
-			gpio_out_set(PC, 6);
+			gpio_out_set(PC, 7);
+			gpio_out_reset(PC, 6);
 			gpio_out_reset(PC, 5);
 			gpio_out_set(PC, 3);
 			break;
 		case BACKWARD:
-			gpio_out_set(PC, 7);
-			gpio_out_reset(PC, 6);
+			gpio_out_reset(PC, 7);
+			gpio_out_set(PC, 6);
 			gpio_out_set(PC, 5);
 			gpio_out_reset(PC, 3);
 			break;
 		case LEFT:
 			gpio_out_reset(PC, 7);
 			gpio_out_set(PC, 6);
-			gpio_out_set(PC, 5);
-			gpio_out_reset(PC, 3);
+			gpio_out_reset(PC, 5);
+			gpio_out_set(PC, 3);
 			break;
 		case RIGHT:
 			gpio_out_set(PC, 7);
 			gpio_out_reset(PC, 6);
-			gpio_out_reset(PC, 5);
-			gpio_out_set(PC, 3);
+			gpio_out_set(PC, 5);
+			gpio_out_reset(PC, 3);
+			break;
+		case NO_DIR:
 			break;
 	}
 }
@@ -81,6 +83,12 @@ void motor_individualDirSpeed(motorDirection directionA, u8 speedA, motorDirecti
 			gpio_out_set(PC, 7);
 			gpio_out_reset(PC, 6);
 			break;
+		case LEFT:
+			break;
+		case RIGHT:
+			break;
+		case NO_DIR:
+			break;
 	}
 	pwm_setDutyCycle(speedA, TIMER2, CHANNEL_A);
 	switch(directionB){
@@ -91,6 +99,12 @@ void motor_individualDirSpeed(motorDirection directionA, u8 speedA, motorDirecti
 		case BACKWARD:
 			gpio_out_set(PC, 5);
 			gpio_out_reset(PC, 3);
+			break;
+		case LEFT:
+			break;
+		case RIGHT:
+			break;
+		case NO_DIR:
 			break;
 	}
 	pwm_setDutyCycle(speedB, TIMER2, CHANNEL_B);

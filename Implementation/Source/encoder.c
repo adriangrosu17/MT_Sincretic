@@ -17,6 +17,12 @@ volatile u8 rightCurrentState;
 volatile u8 rightLastState;
 volatile u32 leftCounter;
 volatile u32 rightCounter;
+volatile u8 d1LastState;
+volatile u8 d2LastState;
+volatile u8 d3LastState;
+volatile u8 d1CurrentState;
+volatile u8 d2CurrentState;
+volatile u8 d3CurrentState;
 
 void pinChangeCallback()
 {
@@ -36,7 +42,31 @@ void pinChangeCallback()
 		rightCounter++;
 	}
 	leftLastState = leftCurrentState;
-	rightLastState = rightCurrentState
+	rightLastState = rightCurrentState;
+	
+	d1CurrentState = checkBit(PINC, 2);
+	d2CurrentState = checkBit(PINC, 4);
+	d3CurrentState = checkBit(PINA, 5);
+	if((d1CurrentState != d1LastState) || (d2CurrentState != d2LastState) || (d3CurrentState != d3LastState)){
+		if(d1CurrentState){
+			uart_transmit(d1CurrentState);
+			uart_transmit('\r');
+			uart_transmit('\n');
+		}
+		if(d2CurrentState){
+			uart_transmit(d2CurrentState);
+			uart_transmit('\r');
+			uart_transmit('\n');
+		}
+		if(d3CurrentState){
+			uart_transmit(d3CurrentState);
+			uart_transmit('\r');
+			uart_transmit('\n');
+		}
+	}
+	d1LastState = d1CurrentState;
+	d2LastState = d2CurrentState;
+	d3LastState = d3CurrentState;
 	sei();
 }
 
@@ -59,8 +89,8 @@ void encoder_init(){
 	rightCounter = 0;
 	rightCurrentState = 0;
 	rightLastState = 0;
-	PCMSK0 |= 0xC0;
-	PCMSK2 |= 0x03;
+	PCMSK0 |= 0xE0;
+	PCMSK2 |= 0x17;
 }
 
 void encoder_start(){

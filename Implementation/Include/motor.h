@@ -16,7 +16,8 @@ typedef enum{
 	FORWARD,
 	BACKWARD,
 	LEFT,
-	RIGHT
+	RIGHT,
+	NO_DIR
 }motorDirection;
 
 void motor_init();
