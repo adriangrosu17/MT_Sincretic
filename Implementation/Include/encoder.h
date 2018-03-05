@@ -23,4 +23,10 @@ u32 encoder_getRightCounter();
 
 void encoder_reset();
 
+double encoder_getDistanceLeftCm();
+
+double encoder_getDistanceRightCm();
+
+u16 getPulseLength();
+
 #endif /* ENCODER_H_ */

@@ -75,6 +75,9 @@ void init(){
 	motor_speed(80);
 	pwm_start(TIMER1);
 	pwm_setDutyCycle(90, TIMER1, CHANNEL_A);
+	gpio_init(PC, 2, INPUT, NO_PULL);
+	gpio_init(PC, 4, INPUT, NO_PULL);
+	gpio_init(PA, 5, INPUT, NO_PULL);
 	//pwm_init(4, 50, TIMER1, CHANNEL_A);
 	//motor_init();
 	//encoder_init();
@@ -83,14 +86,51 @@ void init(){
 	//encoder_start();	
 }
 
+ISR(TIMER3_OVF_vect){
+	TCNT3 = 34285;
+	gpio_out_toggle(PD, 7);
+}
+
+void distanceSensorInit(){
+	gpio_init(PA, 5, OUTPUT, NO_PULL);
+	gpio_init(PA, 6, INPUT, NO_PULL);
+	gpio_init(PD, 7, OUTPUT, NO_PULL);
+	gpio_out_reset(PD, 7);
+	TCCR3A = 0x00;
+	TCCR3B = 0x00;
+	TCCR3C = 0x00;
+	TCNT3 = 0;
+	PCMSK0 = 0x40;
+	setBit(&PCICR, PCIE0);
+	//TCNT3 = 34285;
+	//TIMSK3 = 0x01;
+	//TCCR3B = 0x04;
+}
+
 int main(void)
 {
 	disableJTAG();
-	init();
+	//init();
+	uart_init(ASYNCHRONOUS, EVEN, _2BIT, _9600);
+	uart_start(TRUE, TRUE);
+	distanceSensorInit();
+	u16 aux2 = 0;
 	sei();
     while (1) 
     {
-		_delay_ms(2000);
+		_delay_ms(60);
+		aux2 = ((double)getPulseLength()/(double)0.03125)*0.017;
+		if(aux2 < 10.0){
+			gpio_out_reset(PD, 7);
+		}
+		else{
+			gpio_out_set(PD, 7);
+		}
+		gpio_out_set(PA, 5);
+		_delay_us(15);
+		gpio_out_reset(PA, 5);
+		
+		/*_delay_ms(2000);
 		motor_direction(BACKWARD);
 		pwm_setDutyCycle(3, TIMER1, CHANNEL_B);
 		gpio_out_reset(PB, 0);
@@ -116,6 +156,6 @@ int main(void)
 		gpio_out_set(PB, 0);
 		gpio_out_set(PB, 1);
 		gpio_out_set(PB, 2);
-		//while(systemMode || (!systemEnable));
+		while(systemMode || (!systemEnable));*/
     }
 }
