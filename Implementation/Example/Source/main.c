@@ -24,6 +24,7 @@ u8 servoEnable;
 u8 dcEnable;
 u8 dcSpeedLeft;
 u8 dcSpeedRight;
+u8 cannonState;
 
 void init(){
 	/** System flags and variables */
@@ -33,6 +34,7 @@ void init(){
 	dcEnable = 0;
 	dcSpeedLeft = 0;
 	dcSpeedRight = 0;
+	cannonState = 0;
 	/** System status LED Red*/
 	gpio_init(PB, 0, OUTPUT, NO_PULL);
 	gpio_init(PB, 1, OUTPUT, NO_PULL);
@@ -40,8 +42,14 @@ void init(){
 	gpio_out_set(PB, 0);
 	gpio_out_reset(PB, 1);
 	gpio_out_reset(PB, 2);
+	/** Distance sensor pins init */
+	gpio_init(PC, 2, OUTPUT, NO_PULL);
+	gpio_out_reset(PC, 2);
+	gpio_init(PC, 4, INPUT, NO_PULL);
 	/** Tank cannon LED initialized but turned off*/
-	pwm_init(0, 50, TIMER1, CHANNEL_A);
+	gpio_init(PD, 5, OUTPUT, NO_PULL);
+	gpio_out_reset(PD, 5);
+	//pwm_init(0, 50, TIMER1, CHANNEL_A);
 	/** 7V Voltage Regulator disabled */
 	gpio_init(PA, 2, OUTPUT, NO_PULL);
 	gpio_out_reset(PA, 2);
@@ -53,7 +61,7 @@ void init(){
 	
 	
 	
-	systemEnable = 1;
+	/*systemEnable = 1;
 	dcEnable = 1;
 	motor_init();
 	encoder_init();
@@ -77,7 +85,7 @@ void init(){
 	pwm_setDutyCycle(90, TIMER1, CHANNEL_A);
 	gpio_init(PC, 2, INPUT, NO_PULL);
 	gpio_init(PC, 4, INPUT, NO_PULL);
-	gpio_init(PA, 5, INPUT, NO_PULL);
+	gpio_init(PA, 5, INPUT, NO_PULL);*/
 	//pwm_init(4, 50, TIMER1, CHANNEL_A);
 	//motor_init();
 	//encoder_init();
@@ -86,10 +94,7 @@ void init(){
 	//encoder_start();	
 }
 
-ISR(TIMER3_OVF_vect){
-	TCNT3 = 34285;
-	gpio_out_toggle(PD, 7);
-}
+
 
 void distanceSensorInit(){
 	gpio_init(PA, 5, OUTPUT, NO_PULL);
@@ -110,15 +115,36 @@ void distanceSensorInit(){
 int main(void)
 {
 	disableJTAG();
-	//init();
-	uart_init(ASYNCHRONOUS, EVEN, _2BIT, _9600);
-	uart_start(TRUE, TRUE);
-	distanceSensorInit();
-	u16 aux2 = 0;
+	init();
+	//distanceSensorInit();
+	u16 aux = 0;
 	sei();
     while (1) 
     {
-		_delay_ms(60);
+		if(systemMode == 0){
+			_delay_ms(100);
+			//uart_transmit('x');
+			//aux2 = ((double)getPulseLength()/(double)0.03125)*0.017;
+			/*if(aux2 < 10.0){
+				motor_speed(0);
+			}*/
+			aux = getPulseLength();
+			uart_transmit((u8)aux);
+			uart_transmit('\r');
+			uart_transmit('\n');
+			if(aux < 0x20){
+				motor_speed(0);
+			}
+			gpio_out_set(PC, 2);
+			_delay_us(20);
+			gpio_out_reset(PC, 2);
+		}
+		/*uart_transmit(0x35);
+		uart_transmit('\r');
+		uart_transmit('\n');
+		_delay_ms(500);*/
+		
+		/*_delay_ms(60);
 		aux2 = ((double)getPulseLength()/(double)0.03125)*0.017;
 		if(aux2 < 10.0){
 			gpio_out_reset(PD, 7);
@@ -128,7 +154,7 @@ int main(void)
 		}
 		gpio_out_set(PA, 5);
 		_delay_us(15);
-		gpio_out_reset(PA, 5);
+		gpio_out_reset(PA, 5);*/
 		
 		/*_delay_ms(2000);
 		motor_direction(BACKWARD);

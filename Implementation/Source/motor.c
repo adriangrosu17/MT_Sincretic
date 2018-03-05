@@ -9,6 +9,7 @@
 #include "pwm.h"
 #include "gpio.h"
 #include "motor.h"
+#include "encoder.h"
 
 u8 calibrateSpeed(u8 speed){
 	return 0.91*speed;
@@ -19,7 +20,7 @@ void motor_init(){
 	gpio_init(PC, 6, OUTPUT, NO_PULL);
 	gpio_init(PC, 5, OUTPUT, NO_PULL);
 	gpio_init(PC, 3, OUTPUT, NO_PULL);
-	pwm_init(0, 35000, TIMER2, CHANNEL_A);
+	pwm_init(0, 25000, TIMER2, CHANNEL_A);
 	pwm_init(0, 25000, TIMER2, CHANNEL_B);
 }
 
@@ -31,9 +32,11 @@ void motor_start(){
 	pwm_setDutyCycle(40, TIMER2, CHANNEL_A);
 	pwm_setDutyCycle(40, TIMER2, CHANNEL_B);
 	pwm_start(TIMER2);
+	encoder_start();
 }
 
 void motor_stop(){
+	encoder_stop();
 	pwm_stop(TIMER2);
 }
 

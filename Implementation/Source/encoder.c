@@ -25,14 +25,13 @@ volatile u16 pulseLength;
 
 void pinChangeCallback()
 {
-	if(checkBit(PINA, 6) == 1){
-		pulseLength = TCNT3;
-		TCNT3 = 0;
-		TCCR3B = 0x04;
+	if(checkBit(PINC, 4) == 1){
+		TCNT0 = 0;
+		TCCR0B = 0x04;
 	}
-	else if(checkBit(PINA, 6) == 0){
-		pulseLength = TCNT3;
-		TCCR3B = 0x00;
+	else if(checkBit(PINC, 4) == 0){
+		pulseLength = TCNT0;
+		TCCR0B = 0x00;
 	}
 	leftCurrentState = ((checkBit(PINA, 7) << 7) | (checkBit(PINA, 6) << 6));
 	rightCurrentState = ((checkBit(PINC, 1) << 1) | (checkBit(PINC, 0) << 0));
@@ -71,7 +70,7 @@ void encoder_init(){
 	rightCounter = 0;
 	rightCurrentState = 0;
 	rightLastState = 0;
-	PCMSK0 |= 0xE0;
+	PCMSK0 |= 0xC0;
 	PCMSK2 |= 0x17;
 }
 

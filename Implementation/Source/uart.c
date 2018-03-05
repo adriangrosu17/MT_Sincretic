@@ -21,6 +21,12 @@ extern u8 servoEnable;
 extern u8 dcEnable;
 extern u8 dcSpeedLeft;
 extern u8 dcSpeedRight;
+extern u8 cannonState;
+
+ISR(TIMER3_OVF_vect){
+	TCNT3 = 57722;
+	gpio_out_toggle(PD, 5);
+}
 
 ISR(USART0_RX_vect){
 	aux = UDR0;
@@ -39,10 +45,16 @@ ISR(USART0_RX_vect){
 			gpio_out_set(PB, 0);
 			gpio_out_reset(PB, 1);
 			gpio_out_reset(PB, 2);
+			cannonState = 0;
+			gpio_out_reset(PD, 5);
+			TCNT3 = 0;
+			TCCR3B = 0x00;
+			TIMSK3 = 0x00;
 			break;
 		case 0x01:
 			systemEnable = 1;
 			dcEnable = 1;
+			cannonState = 0;
 			motor_init();
 			encoder_init();
 			pwm_start(TIMER1);
@@ -59,9 +71,13 @@ ISR(USART0_RX_vect){
 			break;
 		case 0x0A:
 			systemMode = 0;
+			gpio_out_set(PB, 1);
+			gpio_out_reset(PB, 2);
 			break;
 		case 0x0B:
 			systemMode = 1;
+			gpio_out_reset(PB, 1);
+			gpio_out_set(PB, 2);
 			break;
 		case 0x10:
 			servoEnable = 0;
@@ -147,11 +163,13 @@ ISR(USART0_RX_vect){
 		case 0x2C:
 			if(dcEnable){
 				motor_direction(FORWARD);
+				motor_speed((dcSpeedLeft + dcSpeedRight)/2);
 			}
 			break;
 		case 0x2D:
 			if(dcEnable){
 				motor_direction(BACKWARD);
+				motor_speed((dcSpeedLeft + dcSpeedRight)/2);
 			}
 			break;
 		case 0x2E:
@@ -164,6 +182,24 @@ ISR(USART0_RX_vect){
 				motor_direction(RIGHT);
 			}
 			break;
+		case 0x30:
+			if(systemEnable){
+				if(!cannonState){
+					cannonState = 1;
+					TCNT3 = 57722;
+					TIMSK3 = 0x01;
+					TCCR3B = 0x04;
+				}
+				else{
+					cannonState = 0;
+					gpio_out_reset(PD, 5);
+					TCNT3 = 0;
+					TCCR3B = 0x00;
+					TIMSK3 = 0x00;
+				}
+			}
+			
+			break;	
 	}
 }
 
