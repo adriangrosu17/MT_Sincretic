@@ -15,13 +15,16 @@
 #include "encoder.h"
 
 volatile u8 aux;
-extern u8 systemEnable;
-extern u8 systemMode;
-extern u8 servoEnable;
-extern u8 dcEnable;
-extern u8 dcSpeedLeft;
-extern u8 dcSpeedRight;
-extern u8 cannonState;
+extern volatile u32 leftCounter;
+extern volatile u32 rightCounter;
+extern volatile u8 systemEnable;
+extern volatile u8 systemMode;
+extern volatile u8 servoEnable;
+extern volatile u8 dcEnable;
+extern volatile u8 dcSpeedLeft;
+extern volatile u8 dcSpeedRight;
+extern volatile u8 cannonState;
+extern volatile u8 rotatingFlag;
 
 ISR(TIMER3_OVF_vect){
 	TCNT3 = 57722;
@@ -99,7 +102,7 @@ ISR(USART0_RX_vect){
 			break;
 		case 0x1C:
 			if(servoEnable){
-				pwm_setDutyCycle(12, TIMER1, CHANNEL_B);
+				pwm_setDutyCycle(11, TIMER1, CHANNEL_B);
 			}
 			break;
 		case 0x20:
@@ -114,30 +117,30 @@ ISR(USART0_RX_vect){
 			break;
 		case 0x22:
 			if(dcEnable){
-				dcSpeedLeft = (dcSpeedLeft + dcSpeedRight) / 2 - 10;
-				dcSpeedRight = (dcSpeedLeft + dcSpeedRight) / 2 + 10;
+				dcSpeedLeft = (dcSpeedLeft + dcSpeedRight) / 2 - 5;
+				dcSpeedRight = (dcSpeedLeft + dcSpeedRight) / 2 + 5;
 				if(dcSpeedLeft <= 40){
 					dcSpeedLeft = 40;
-					dcSpeedRight = 50;
+					dcSpeedRight = 45;
 				}
 				if(dcSpeedRight >= 100){
 					dcSpeedRight = 100;
-					dcSpeedLeft = 90;
+					dcSpeedLeft = 95;
 				}
 				motor_individualDirSpeed(NO_DIR, dcSpeedLeft, NO_DIR, dcSpeedRight);
 			}
 			break;
 		case 0x23:
 			if(dcEnable){
-				dcSpeedLeft = (dcSpeedLeft + dcSpeedRight) / 2 + 10;
-				dcSpeedRight = (dcSpeedLeft + dcSpeedRight) / 2 - 10;
+				dcSpeedLeft = (dcSpeedLeft + dcSpeedRight) / 2 + 5;
+				dcSpeedRight = (dcSpeedLeft + dcSpeedRight) / 2 - 5;
 				if(dcSpeedRight <= 40){
 					dcSpeedRight = 40;
-					dcSpeedLeft = 50;
+					dcSpeedLeft = 45;
 				}
 				if(dcSpeedLeft >= 100){
 					dcSpeedLeft = 100;
-					dcSpeedRight = 90;
+					dcSpeedRight = 95;
 				}
 				motor_individualDirSpeed(NO_DIR, dcSpeedLeft, NO_DIR, dcSpeedRight);
 			}
@@ -174,12 +177,16 @@ ISR(USART0_RX_vect){
 			break;
 		case 0x2E:
 			if(dcEnable){
+				encoder_reset();
 				motor_direction(LEFT);
+				rotatingFlag = 1;
 			}
 			break;
 		case 0x2F:
 			if(dcEnable){
+				encoder_reset();
 				motor_direction(RIGHT);
+				rotatingFlag = 1;
 			}
 			break;
 		case 0x30:

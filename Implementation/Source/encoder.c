@@ -9,6 +9,7 @@
 #include "encoder.h"
 #include "gpio.h"
 #include "uart.h"
+#include "motor.h"
 #include <avr/interrupt.h>
 
 #define GEAR_RATIO 30
@@ -21,17 +22,27 @@ volatile u8 rightLastState;
 volatile u32 leftCounter;
 volatile u32 rightCounter;
 volatile u16 pulseLength;
+extern volatile u8 readingLastState;
+extern volatile u8 readingCurrentState;
+extern volatile u8 readingFlag;
+extern volatile u8 rotatingFlag;
 
 
 void pinChangeCallback()
 {
-	if(checkBit(PINC, 4) == 1){
-		TCNT0 = 0;
-		TCCR0B = 0x04;
-	}
-	else if(checkBit(PINC, 4) == 0){
-		pulseLength = TCNT0;
-		TCCR0B = 0x00;
+	if(readingFlag){
+		if((checkBit(PINC, 4) == 1) && (readingLastState == 0)){
+			readingCurrentState = 1;
+			readingLastState = 1;
+			TCNT0 = 0;
+			TCCR0B = 0x04;
+		}
+		else if((checkBit(PINC, 4) == 0) && (readingLastState == 1)){
+			readingCurrentState = 0;
+			readingLastState = 0;
+			pulseLength = TCNT0;
+			TCCR0B = 0x00;
+		}
 	}
 	leftCurrentState = ((checkBit(PINA, 7) << 7) | (checkBit(PINA, 6) << 6));
 	rightCurrentState = ((checkBit(PINC, 1) << 1) | (checkBit(PINC, 0) << 0));
@@ -49,6 +60,12 @@ void pinChangeCallback()
 	}
 	leftLastState = leftCurrentState;
 	rightLastState = rightCurrentState;
+	if(rotatingFlag){
+		if(leftCounter > 500){
+			motor_speed(0);
+			rotatingFlag = 0;
+		}
+	}
 }
 
 ISR(PCINT0_vect){

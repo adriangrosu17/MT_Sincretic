@@ -18,13 +18,17 @@
 #include "motor.h"
 #include "encoder.h"
 
-u8 systemEnable;
-u8 systemMode;
-u8 servoEnable;
-u8 dcEnable;
-u8 dcSpeedLeft;
-u8 dcSpeedRight;
-u8 cannonState;
+volatile u8 systemEnable;
+volatile u8 systemMode;
+volatile u8 servoEnable;
+volatile u8 dcEnable;
+volatile u8 dcSpeedLeft;
+volatile u8 dcSpeedRight;
+volatile u8 cannonState;
+volatile u8 readingFlag;
+volatile u8 readingLastState;
+volatile u8 readingCurrentState;
+volatile u8 rotatingFlag;
 
 void init(){
 	/** System flags and variables */
@@ -35,6 +39,10 @@ void init(){
 	dcSpeedLeft = 0;
 	dcSpeedRight = 0;
 	cannonState = 0;
+	readingFlag = 0;
+	readingLastState = 0;
+	readingCurrentState = 0;
+	rotatingFlag = 0;
 	/** System status LED Red*/
 	gpio_init(PB, 0, OUTPUT, NO_PULL);
 	gpio_init(PB, 1, OUTPUT, NO_PULL);
@@ -122,22 +130,25 @@ int main(void)
     while (1) 
     {
 		if(systemMode == 0){
-			_delay_ms(100);
+			_delay_ms(200);
 			//uart_transmit('x');
 			//aux2 = ((double)getPulseLength()/(double)0.03125)*0.017;
 			/*if(aux2 < 10.0){
 				motor_speed(0);
 			}*/
-			aux = getPulseLength();
-			uart_transmit((u8)aux);
-			uart_transmit('\r');
-			uart_transmit('\n');
-			if(aux < 0x20){
-				motor_speed(0);
-			}
+			readingFlag = 1;
 			gpio_out_set(PC, 2);
 			_delay_us(20);
 			gpio_out_reset(PC, 2);
+			_delay_ms(10);
+			aux = getPulseLength();
+			uart_transmit((u8)(aux));
+			//uart_transmit('\r');
+			//uart_transmit('\n');
+			if(aux < 0x20){
+				motor_speed(0);
+			}
+			readingFlag = 0;
 		}
 		/*uart_transmit(0x35);
 		uart_transmit('\r');
