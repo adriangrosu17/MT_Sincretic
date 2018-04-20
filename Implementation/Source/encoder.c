@@ -68,13 +68,13 @@ void pinChangeCallback()
 	}
 }
 
-ISR(PCINT0_vect){
+/*ISR(PCINT0_vect){
 	pinChangeCallback();
 }
 
 ISR(PCINT2_vect){
 	pinChangeCallback();
-}	
+}*/
 
 void encoder_init(){
 	gpio_init(PA, 7, INPUT, NO_PULL);

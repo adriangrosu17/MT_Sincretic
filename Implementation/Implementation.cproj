@@ -128,10 +128,16 @@
     <Compile Include="Include\adc.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="Include\eeprom.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="Include\encoder.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Include\gpio.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Include\lcd.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Include\math.h">
@@ -143,6 +149,9 @@
     <Compile Include="Include\pwm.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="Include\spi.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="Include\types.h">
       <SubType>compile</SubType>
     </Compile>
@@ -152,10 +161,16 @@
     <Compile Include="Source\adc.c">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="Source\eeprom.c">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="Source\encoder.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Source\gpio.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Source\lcd.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Source\math.c">
@@ -165,6 +180,9 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Source\pwm.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Source\spi.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Source\uart.c">
