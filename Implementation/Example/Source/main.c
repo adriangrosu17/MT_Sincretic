@@ -30,6 +30,8 @@ volatile u8 menuLevel;
 volatile bool manualMode;
 volatile u8 clockFlag;
 volatile u16 eepromUnreadMessageAddress;
+volatile u8 messageBuffer[10];
+volatile u8 messageBufferIndex;
 
 ISR(TIMER3_OVF_vect){
 	TCNT3 = 34285;
@@ -237,6 +239,10 @@ void init(){
 	uart_init(ASYNCHRONOUS, EVEN, _2BIT, _9600);
 	uart_start(TRUE, TRUE);
 	eeprom_init();
+	for(int i = 0; i < 10; i++){
+		messageBuffer[i] = 0;
+	}
+	messageBufferIndex = 0;
 }
 
 int main(void)
