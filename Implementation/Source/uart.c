@@ -15,43 +15,43 @@
 #include "encoder.h"
 #include "eeprom.h"
 
-volatile u8 aux;
-extern volatile u8 messageBuffer[10];
-extern volatile u8 messageBufferIndex;
-extern volatile u16 eepromUnreadMessageAddress;
-extern volatile u8 clockFlag;
-extern volatile u32 leftCounter;
-extern volatile u32 rightCounter;
-extern volatile u8 systemEnable;
-extern volatile u8 systemMode;
-extern volatile u8 servoEnable;
-extern volatile u8 dcEnable;
-extern volatile u8 dcSpeedLeft;
-extern volatile u8 dcSpeedRight;
-extern volatile u8 cannonState;
-extern volatile u8 rotatingFlag;
+//volatile u8 aux;
+//extern volatile u8 messageBuffer[10];
+//extern volatile u8 messageBufferIndex;
+//extern volatile u16 eepromUnreadMessageAddress;
+//extern volatile u8 clockFlag;
+//extern volatile u32 leftCounter;
+//extern volatile u32 rightCounter;
+//extern volatile u8 systemEnable;
+//extern volatile u8 systemMode;
+//extern volatile u8 servoEnable;
+//extern volatile u8 dcEnable;
+//extern volatile u8 dcSpeedLeft;
+//extern volatile u8 dcSpeedRight;
+//extern volatile u8 cannonState;
+//extern volatile u8 rotatingFlag;
 
 
-ISR(USART0_RX_vect){
-	aux = UDR0;
-	uart_transmit(aux);
-	if(aux == '!'){
-		for(u8 i = 0; i < messageBufferIndex; i++){
-			eeprom_write(messageBuffer[i], eepromUnreadMessageAddress);
-			eepromUnreadMessageAddress++;
-			if(eepromUnreadMessageAddress == 0x01A){
-				eepromUnreadMessageAddress = 0x010;
-			}
-		}
-	}
-	else{
-		messageBuffer[messageBufferIndex] = aux;
-		messageBufferIndex++;
-		if(messageBufferIndex > 9){
-			messageBufferIndex = 0;
-		}
-	}	
-}
+//ISR(USART0_RX_vect){
+	//aux = UDR0;
+	//uart_transmit(aux);
+	//if(aux == '!'){
+		//for(u8 i = 0; i < messageBufferIndex; i++){
+			//eeprom_write(messageBuffer[i], eepromUnreadMessageAddress);
+			//eepromUnreadMessageAddress++;
+			//if(eepromUnreadMessageAddress == 0x01A){
+				//eepromUnreadMessageAddress = 0x010;
+			//}
+		//}
+	//}
+	//else{
+		//messageBuffer[messageBufferIndex] = aux;
+		//messageBufferIndex++;
+		//if(messageBufferIndex > 9){
+			//messageBufferIndex = 0;
+		//}
+	//}	
+//}
 
 void uart_init(syncMode uartMode, parity uartParity, stopBits uartStop, baudRate uartBaudRate){
 	setBit(&DDRD, 1);

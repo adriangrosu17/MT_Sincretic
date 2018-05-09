@@ -15,7 +15,8 @@ Example/Source/main.d Example/Source/main.o: ../Example/Source/main.c \
  ../Include/math.h ../Include/types.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\interrupt.h \
  ../Include/adc.h ../Include/gpio.h ../Include/uart.h ../Include/math.h \
- ../Include/lcd.h ../Include/gpio.h ../Include/spi.h ../Include/eeprom.h
+ ../Include/lcd.h ../Include/gpio.h ../Include/spi.h ../Include/eeprom.h \
+ ../Include/pwm.h
 
 c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\io.h:
 
@@ -64,3 +65,5 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\
 ../Include/spi.h:
 
 ../Include/eeprom.h:
+
+../Include/pwm.h:
