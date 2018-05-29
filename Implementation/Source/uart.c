@@ -11,14 +11,19 @@
 #include "uart.h"
 #include "gpio.h"
 #include "pwm.h"
-#include "motor.h"
-#include "encoder.h"
+//#include "motor.h"
+//#include "encoder.h"
 #include "eeprom.h"
 
-//volatile u8 aux;
-//extern volatile u8 messageBuffer[10];
-//extern volatile u8 messageBufferIndex;
-//extern volatile u16 eepromUnreadMessageAddress;
+volatile u8 aux;
+extern volatile u8 messageBuffer[13];
+extern volatile u8 messageBufferIndex;
+extern volatile u16 eepromUnreadMessageAddress;
+extern volatile u8 unreadMessageVector[10];
+extern volatile u8 date[5];
+extern volatile u8 dateConfirmation;
+extern volatile u8 dateIndex;
+extern volatile bool sendTempFlag;
 //extern volatile u8 clockFlag;
 //extern volatile u32 leftCounter;
 //extern volatile u32 rightCounter;
@@ -32,26 +37,83 @@
 //extern volatile u8 rotatingFlag;
 
 
-//ISR(USART0_RX_vect){
-	//aux = UDR0;
-	//uart_transmit(aux);
-	//if(aux == '!'){
-		//for(u8 i = 0; i < messageBufferIndex; i++){
-			//eeprom_write(messageBuffer[i], eepromUnreadMessageAddress);
-			//eepromUnreadMessageAddress++;
-			//if(eepromUnreadMessageAddress == 0x01A){
-				//eepromUnreadMessageAddress = 0x010;
-			//}
-		//}
-	//}
-	//else{
-		//messageBuffer[messageBufferIndex] = aux;
-		//messageBufferIndex++;
-		//if(messageBufferIndex > 9){
-			//messageBufferIndex = 0;
-		//}
-	//}	
-//}
+ISR(USART0_RX_vect){
+	aux = UDR0;
+	u8 ok = 0, counter = 0;
+	if(aux < 200){
+		if(aux == '!'){
+			while(counter <= 10){
+				counter++;
+				if(unreadMessageVector[((eepromUnreadMessageAddress & 0xF0) - 0x10) >> 4] == 0){
+					ok = 1;
+					break;
+				}
+				else{
+					eepromUnreadMessageAddress += 0x10;
+					if(eepromUnreadMessageAddress >= 0xB0){
+						eepromUnreadMessageAddress = 0x10;
+					}
+				}
+			}
+			if(ok == 1){
+				for(u8 i = 0; i < 13; i++){
+					eeprom_write(messageBuffer[i], eepromUnreadMessageAddress);
+					messageBuffer[i] = ' ';
+					eepromUnreadMessageAddress++;
+					if((eepromUnreadMessageAddress & 0x001) == 0x00D){
+						eepromUnreadMessageAddress &= 0xFF0;
+					}
+				}
+				messageBufferIndex = 0;
+				unreadMessageVector[((eepromUnreadMessageAddress & 0xF0) - 0x10) >> 4] = 1;
+				eepromUnreadMessageAddress = (eepromUnreadMessageAddress & 0xFF0) + 0x010;
+				if(eepromUnreadMessageAddress >= 0x0B0){
+					eepromUnreadMessageAddress = 0x010;
+				}
+			}
+			else{
+				uart_transmit('x');
+				for(u8 i = 0; i < 13; i++){
+					messageBuffer[i] = ' ';
+				}
+				messageBufferIndex = 0;
+			}
+		}
+		else if(aux == '_'){
+			dateConfirmation = TRUE;
+		}
+		else{
+			if(dateConfirmation == TRUE){
+				date[dateIndex++] = aux;
+				if(dateIndex >= 5){
+					dateIndex = 0;
+					dateConfirmation = FALSE;
+				}
+			}
+			else{
+				messageBuffer[messageBufferIndex] = aux;
+				messageBufferIndex++;
+				if(messageBufferIndex > 0x0C){
+					messageBufferIndex = 0;
+				}
+			}
+		}	
+	}
+	else{
+		switch(aux){
+			case 0xF0:
+				gpio_out_reset(PA, 4);
+				break;
+			case 0xFF:
+				gpio_out_set(PA, 4);
+				break;
+			case 0xEE:
+				sendTempFlag = TRUE;
+				break;
+		}
+	}
+}
+
 
 void uart_init(syncMode uartMode, parity uartParity, stopBits uartStop, baudRate uartBaudRate){
 	setBit(&DDRD, 1);

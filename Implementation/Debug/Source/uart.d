@@ -12,8 +12,7 @@ Source/uart.d Source/uart.o: ../Source/uart.c \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\lock.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\interrupt.h \
  ../Include/math.h ../Include/types.h ../Include/uart.h ../Include/math.h \
- ../Include/gpio.h ../Include/pwm.h ../Include/motor.h \
- ../Include/encoder.h ../Include/eeprom.h
+ ../Include/gpio.h ../Include/pwm.h ../Include/eeprom.h
 
 c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\io.h:
 
@@ -50,9 +49,5 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\
 ../Include/gpio.h:
 
 ../Include/pwm.h:
-
-../Include/motor.h:
-
-../Include/encoder.h:
 
 ../Include/eeprom.h:

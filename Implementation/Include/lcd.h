@@ -21,5 +21,6 @@ void lcd_writeChar(char character);
 void lcd_writeString(char *string);
 void lcd_displayMenu(u16 menuState);
 void lcd_displayTemperature(u16 temperatureVoltage);
+void lcd_displayLockScreen(u16 temperatureVoltage, u8 date[5]);
 
 #endif /* LCD_H_ */

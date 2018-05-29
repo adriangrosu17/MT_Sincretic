@@ -1,5 +1,5 @@
 [Eagle]
-Version="08 06 01"
+Version="08 06 00"
 Platform="Windows"
 Globals="Globals"
 Desktop="Desktop"
@@ -134,6 +134,7 @@ ArcDirection=0
 AddLevel=2
 PadsSameType=0
 Layer=91
+Views=" 1: -67.0256 -172.944 267.887 50.0282"
 Sheet="1"
 
 [Win_2]
@@ -185,7 +186,7 @@ Type="Control Panel"
 Number=0
 
 [Desktop]
-Screen="1920 1080"
+Screen="2048 1152"
 Window="Win_1"
 Window="Win_2"
 Window="Win_3"

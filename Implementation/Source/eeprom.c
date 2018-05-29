@@ -20,7 +20,7 @@ void eeprom_init(){
 }
 
 u8 eeprom_read(u16 address){
-	u8 value = 0x23;
+	u8 value = 0x00;
 	gpio_out_reset(PB, 4);
 	spi_writeData(0x03);
 	spi_writeData((u8)(address >> 8));
